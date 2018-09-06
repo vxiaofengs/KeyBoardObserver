@@ -1,7 +1,7 @@
 # KeyBoardObserver
 
 
-## 非常轻量级的键盘自适应组件，总代码行数70行，只针对需要开启的View开启，节省内存且支持自动释放。
+## 非常轻量级的键盘自适应组件，使用只需一行代码。源代码行数70行，只针对需要开启的View调用，节省内存使用且支持自动释放。
 
 ## 使用方法
 
@@ -17,5 +17,7 @@
     //_textFiled : 需要键盘自适应的view
     //_scrollview : 进行滚动调整的superview
     [KeyBoardObserver autoScrollWithTargetView:_textFiled scrollView:_scrollview];
+    [KeyBoardObserver autoScrollWithTargetView:_textFiled2 scrollView:_scrollview];
+    [KeyBoardObserver autoScrollWithTargetView:_textFiled3 scrollView:_scrollview];
 }
 ```
