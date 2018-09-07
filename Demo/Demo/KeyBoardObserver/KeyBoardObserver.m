@@ -8,17 +8,18 @@
 //
 
 #import "KeyBoardObserver.h"
+#import <objc/runtime.h>
 
 #define associatedKey @"KeyBoardObserver"
 
-CGFloat _tableViewOriYOffset = 0;
-UIScrollView *_responseScrollView = nil;
+static CGFloat _tableViewOriYOffset = 0;
+static UIScrollView *_responseScrollView = nil;
 
 @interface KeyBoardObserver ()
 
-@property (nonatomic,assign)UIScrollView* sv;
-@property (nonatomic,assign)UIView* targetView;
-@property (nonatomic,assign)BOOL isCurrentKeyboardTarget;
+@property (nonatomic, assign) UIScrollView* sv;
+@property (nonatomic, assign) UIView* targetView;
+@property (nonatomic, assign) BOOL isCurrentKeyboardTarget;
 
 @end
 
@@ -37,7 +38,7 @@ UIScrollView *_responseScrollView = nil;
     _responseScrollView = nil;
     if (_sv && _targetView && self.isCurrentKeyboardTarget) {
         [UIView animateWithDuration:0.3 animations:^{
-            _sv.contentOffset = CGPointMake(0, _tableViewOriYOffset);
+            self->_sv.contentOffset = CGPointMake(0, _tableViewOriYOffset);
         }completion:^(BOOL finished) {
             self.isCurrentKeyboardTarget = NO;
         }];
@@ -65,7 +66,7 @@ UIScrollView *_responseScrollView = nil;
     }
 }
 
--(void)dealloc{
+- (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

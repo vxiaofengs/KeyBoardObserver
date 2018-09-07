@@ -6,7 +6,7 @@
 //  Copyright © 2016年 vxiaofengs. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface KeyBoardObserver : NSObject
 
@@ -16,6 +16,6 @@
  @param targetView textField/textView..
  @param scrollView scrollView
  */
-+ (void)autoScrollWithTargetView:(UIView*)targetView scrollView:(UIScrollView*)scrollView;
++ (void)autoScrollWithTargetView:(UIView *)targetView scrollView:(UIScrollView *)scrollView;
 
 @end
