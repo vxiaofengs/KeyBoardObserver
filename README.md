@@ -17,8 +17,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    方法一
+    //_textView : 需要键盘自适应的view
+    //默认取TargetView父级第一个scrollView作为滚动视图
+    [KeyBoardObserver autoScrollWithTargetView:_textView];
+    [KeyBoardObserver autoScrollWithTargetView:_textView2];
+    [KeyBoardObserver autoScrollWithTargetView:_textView3];
+    
+    方法二
     //_textFiled : 需要键盘自适应的view
-    //_scrollview : 进行滚动调整的superview
+    //_scrollview : 指定进行滚动调整的superview
     [KeyBoardObserver autoScrollWithTargetView:_textFiled scrollView:_scrollview];
     [KeyBoardObserver autoScrollWithTargetView:_textFiled2 scrollView:_scrollview];
     [KeyBoardObserver autoScrollWithTargetView:_textFiled3 scrollView:_scrollview];
