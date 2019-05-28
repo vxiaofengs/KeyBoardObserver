@@ -10,6 +10,15 @@
 
 @interface KeyBoardObserver : NSObject
 
+
+/**
+ 解决键盘遮盖输入框的问题
+ 
+ @param targetView textField/textView..
+ */
++ (void)autoScrollWithTargetView:(UIView *)targetView;
+
+
 /**
  解决键盘遮盖输入框的问题
 

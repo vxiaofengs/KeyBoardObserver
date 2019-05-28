@@ -12,20 +12,24 @@
 
 #define associatedKey @"KeyBoardObserver"
 
-static CGFloat _tableViewOriYOffset = 0;
-static UIScrollView *_responseScrollView = nil;
+CGFloat _tableViewOriYOffset = 0;
+UIScrollView *_responseScrollView = nil;
 
 @interface KeyBoardObserver ()
 
-@property (nonatomic, assign) UIScrollView* sv;
-@property (nonatomic, assign) UIView* targetView;
+@property (nonatomic, weak) UIScrollView *sv;
+@property (nonatomic, weak) UIView *targetView;
 @property (nonatomic, assign) BOOL isCurrentKeyboardTarget;
 
 @end
 
 @implementation KeyBoardObserver
 
-+ (void)autoScrollWithTargetView:(UIView*)targetView scrollView:(UIScrollView*)scrollView{
++ (void)autoScrollWithTargetView:(UIView *)targetView {
+    [self autoScrollWithTargetView:targetView scrollView:nil];
+}
+
++ (void)autoScrollWithTargetView:(UIView*)targetView scrollView:(UIScrollView*)scrollView {
     KeyBoardObserver *sinton = [KeyBoardObserver new];
     sinton.targetView = targetView;
     sinton.sv = scrollView;
@@ -34,25 +38,25 @@ static UIScrollView *_responseScrollView = nil;
     [[NSNotificationCenter defaultCenter] addObserver:sinton selector:@selector(keyBordDidHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (void)keyBordDidHide:(NSNotification*)noti{
+- (void)keyBordDidHide:(NSNotification*)noti {
     _responseScrollView = nil;
-    if (_sv && _targetView && self.isCurrentKeyboardTarget) {
+    if (self.sv && _targetView && self.isCurrentKeyboardTarget) {
         [UIView animateWithDuration:0.3 animations:^{
-            self->_sv.contentOffset = CGPointMake(0, _tableViewOriYOffset);
-        }completion:^(BOOL finished) {
+            self.sv.contentOffset = CGPointMake(0, _tableViewOriYOffset);
+        } completion:^(BOOL finished) {
             self.isCurrentKeyboardTarget = NO;
         }];
     }
 }
 
-- (void)keyBordDidShow:(NSNotification*)noti{
+- (void)keyBordDidShow:(NSNotification*)noti {
     
     if (_responseScrollView != self.sv) {
-        _tableViewOriYOffset = _sv.contentOffset.y;
+        _tableViewOriYOffset = self.sv.contentOffset.y;
         _responseScrollView = self.sv;
     }
     
-    if (_sv && _targetView && [_targetView isFirstResponder]) {
+    if (self.sv && _targetView && [_targetView isFirstResponder]) {
         self.isCurrentKeyboardTarget = YES;
         CGRect keyBoardBounds = [[[noti userInfo]objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
         
@@ -61,12 +65,29 @@ static UIScrollView *_responseScrollView = nil;
         
         if (keyBoardBounds.origin.y <= (windowFrame.origin.y+windowFrame.size.height)) {
             CGFloat offsetY = windowFrame.origin.y + windowFrame.size.height - keyBoardBounds.origin.y;
-            [_sv setContentOffset:CGPointMake(0, _sv.contentOffset.y + offsetY) animated:YES];
+            [self.sv setContentOffset:CGPointMake(0, _sv.contentOffset.y + offsetY) animated:YES];
         }
     }
 }
 
-- (void)dealloc{
+- (UIScrollView *)sv {
+    if (_sv) {
+        return _sv;
+    } else {
+        return [self getFirstScrollView:self.targetView];
+    }
+}
+
+- (UIScrollView *)getFirstScrollView:(UIView *)view {
+    if ([view.superview isKindOfClass:[UIScrollView class]]) {
+        _sv = (UIScrollView *)view.superview;
+        return _sv;
+    } else {
+        return [self getFirstScrollView:view.superview];
+    }
+}
+
+-(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
