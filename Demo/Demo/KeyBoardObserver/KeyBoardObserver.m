@@ -12,8 +12,8 @@
 
 #define associatedKey @"KeyBoardObserver"
 
-CGFloat _tableViewOriYOffset = 0;
-UIScrollView *_responseScrollView = nil;
+static CGFloat _tableViewOriYOffset = 0;
+static UIScrollView *_responseScrollView = nil;
 
 @interface KeyBoardObserver ()
 
@@ -29,7 +29,7 @@ UIScrollView *_responseScrollView = nil;
     [self autoScrollWithTargetView:targetView scrollView:nil];
 }
 
-+ (void)autoScrollWithTargetView:(UIView*)targetView scrollView:(UIScrollView*)scrollView {
++ (void)autoScrollWithTargetView:(UIView *)targetView scrollView:(UIScrollView *)scrollView {
     KeyBoardObserver *sinton = [KeyBoardObserver new];
     sinton.targetView = targetView;
     sinton.sv = scrollView;
@@ -38,7 +38,7 @@ UIScrollView *_responseScrollView = nil;
     [[NSNotificationCenter defaultCenter] addObserver:sinton selector:@selector(keyBordDidHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (void)keyBordDidHide:(NSNotification*)noti {
+- (void)keyBordDidHide:(NSNotification *)notification {
     _responseScrollView = nil;
     if (self.sv && _targetView && self.isCurrentKeyboardTarget) {
         [UIView animateWithDuration:0.3 animations:^{
@@ -49,7 +49,7 @@ UIScrollView *_responseScrollView = nil;
     }
 }
 
-- (void)keyBordDidShow:(NSNotification*)noti {
+- (void)keyBordDidShow:(NSNotification *)notification {
     
     if (_responseScrollView != self.sv) {
         _tableViewOriYOffset = self.sv.contentOffset.y;
@@ -58,12 +58,12 @@ UIScrollView *_responseScrollView = nil;
     
     if (self.sv && _targetView && [_targetView isFirstResponder]) {
         self.isCurrentKeyboardTarget = YES;
-        CGRect keyBoardBounds = [[[noti userInfo]objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        CGRect keyBoardBounds = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
         
         UIWindow* window = [UIApplication sharedApplication].keyWindow;
         CGRect windowFrame = [_targetView.superview convertRect:_targetView.frame toView:window];
         
-        if (keyBoardBounds.origin.y <= (windowFrame.origin.y+windowFrame.size.height)) {
+        if (keyBoardBounds.origin.y <= (windowFrame.origin.y + windowFrame.size.height)) {
             CGFloat offsetY = windowFrame.origin.y + windowFrame.size.height - keyBoardBounds.origin.y;
             [self.sv setContentOffset:CGPointMake(0, _sv.contentOffset.y + offsetY) animated:YES];
         }
@@ -87,7 +87,7 @@ UIScrollView *_responseScrollView = nil;
     }
 }
 
--(void)dealloc {
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
